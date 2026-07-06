@@ -4,14 +4,26 @@ import QtQuick.Window 2.15
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.5
 import "./"
+
 ApplicationWindow {
-    width: 1920
-    height: 960
+
+    id: clusterWindow
+
+    width: 1280
+    height: 640
+    minimumWidth: 960
+    minimumHeight: 480
+
     visible: true
     title: qsTr("Car DashBoard")
     color: "#1E1E1E"
-    visibility: "FullScreen"
-    property int nextSpeed: 60
+    visibility: Window.Windowed
+
+    property real designWidth: 1920
+    property real designHeight: 960
+
+    property real clusterScale: Math.min(width / designWidth, height / designHeight)
+
 
     function generateRandom(maxLimit = 70){
         let rand = Math.random() * maxLimit;
@@ -57,9 +69,15 @@ ApplicationWindow {
 
     Image {
         id: dashboard
-        width: parent.width
-        height: parent.height
+
+        width: clusterWindow.designWidth
+        height: clusterWindow.designHeight
+
         anchors.centerIn: parent
+
+        scale: clusterWindow.clusterScale
+        transformOrigin: Item.Center
+
         source: "qrc:/assets/Dashboard.svg"
 
         /*
@@ -124,23 +142,6 @@ ApplicationWindow {
             }
         }
 
-
-
-        /*
-          Speed Label
-        */
-
-        //        Label{
-        //            id:speedLabel
-        //            text: "68"
-        //            font.pixelSize: 134
-        //            font.family: "Inter"
-        //            color: "#01E6DE"
-        //            font.bold: Font.DemiBold
-        //            anchors.top: parent.top
-        //            anchors.topMargin:Math.floor(parent.height * 0.35)
-        //            anchors.horizontalCenter: parent.horizontalCenter
-        //        }
         Gauge {
             id: speedLabel
             width: 450
@@ -171,21 +172,6 @@ ApplicationWindow {
             Keys.onEnterPressed: radialBar.accelerating = true
             Keys.onReturnPressed: radialBar.accelerating = true
         }
-
-        //        Label{
-        //            text: "MPH"
-        //            font.pixelSize: 46
-        //            font.family: "Inter"
-        //            color: "#01E6DE"
-        //            font.bold: Font.Normal
-        //            anchors.top:speedLabel.bottom
-        //            anchors.horizontalCenter: parent.horizontalCenter
-        //        }
-
-
-        /*
-          Speed Limit Label
-        */
 
         Rectangle{
             id:speedLimit
