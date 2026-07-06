@@ -1,4 +1,4 @@
-QT += quick qml
+QT += quick qml network
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -6,7 +6,8 @@ QT += quick qml
 
 SOURCES += \
         main.cpp \
-        radialbar.cpp
+        radialbar.cpp \
+        vehicledataclient.cpp
 
 RESOURCES += qml.qrc
 
@@ -22,4 +23,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-	radialbar.h
+	radialbar.h \
+        vehicledataclient.h

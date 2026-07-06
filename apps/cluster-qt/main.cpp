@@ -1,6 +1,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
 #include "radialbar.h"
+#include "vehicledataclient.h"
 
 int main(int argc, char *argv[])
 {
@@ -17,6 +19,9 @@ int main(int argc, char *argv[])
             if (!obj && url == objUrl)
                 QCoreApplication::exit(-1);
         }, Qt::QueuedConnection);
+
+    VehicleDataClient vehicleData;
+    engine.rootContext()->setContextProperty("vehicleData", &vehicleData);
     engine.load(url);
 
     return app.exec();

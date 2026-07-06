@@ -51,21 +51,15 @@ ApplicationWindow {
         }
     }
 
-    Timer{
-        repeat: true
-        interval: 3000
-        running: true
-        onTriggered: {
-            nextSpeed = generateRandom()
-        }
-    }
-
     Shortcut {
         sequence: "Ctrl+Q"
         context: Qt.ApplicationShortcut
         onActivated: Qt.quit()
     }
 
+    Component.onCompleted: {
+        vehicleData.connectToServer("127.0.0.1", 55556)
+    }
 
     Image {
         id: dashboard
@@ -146,8 +140,8 @@ ApplicationWindow {
             id: speedLabel
             width: 450
             height: 450
-            property bool accelerating
-            value: accelerating ? maximumValue : 0
+
+            value: vehicleData.vehicleSpeed
             maximumValue: 250
 
             anchors.top: parent.top
@@ -156,21 +150,8 @@ ApplicationWindow {
 
             Component.onCompleted: forceActiveFocus()
 
-            Behavior on value { NumberAnimation { duration: 1000 }}
+            Behavior on value { NumberAnimation { duration: 300 }}
 
-            Keys.onSpacePressed: accelerating = true
-            Keys.onReleased: {
-                if (event.key === Qt.Key_Space) {
-                    accelerating = false;
-                    event.accepted = true;
-                }else if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
-                    radialBar.accelerating = false;
-                    event.accepted = true;
-                }
-            }
-
-            Keys.onEnterPressed: radialBar.accelerating = true
-            Keys.onReturnPressed: radialBar.accelerating = true
         }
 
         Rectangle{
@@ -272,55 +253,6 @@ ApplicationWindow {
                     opacity: 0.2
                     color: "#FFFFFF"
                 }
-            }
-
-            RowLayout{
-                spacing: 1
-                Layout.topMargin: 10
-                Rectangle{
-                    width: 20
-                    height: 15
-                    color: speedLabel.value.toFixed(0) > 31.25 ? speedLabel.speedColor : "#01E6DC"
-                }
-                Rectangle{
-                    width: 20
-                    height: 15
-                    color: speedLabel.value.toFixed(0) > 62.5 ? speedLabel.speedColor : "#01E6DC"
-                }
-                Rectangle{
-                    width: 20
-                    height: 15
-                    color: speedLabel.value.toFixed(0) > 93.75 ? speedLabel.speedColor : "#01E6DC"
-                }
-                Rectangle{
-                    width: 20
-                    height: 15
-                    color: speedLabel.value.toFixed(0) > 125.25 ? speedLabel.speedColor : "#01E6DC"
-                }
-                Rectangle{
-                    width: 20
-                    height: 15
-                    color: speedLabel.value.toFixed(0) > 156.5 ? speedLabel.speedColor : "#01E6DC"
-                }
-                Rectangle{
-                    width: 20
-                    height: 15
-                    color: speedLabel.value.toFixed(0) > 187.75 ? speedLabel.speedColor : "#01E6DC"
-                }
-                Rectangle{
-                    width: 20
-                    height: 15
-                    color: speedLabel.value.toFixed(0) > 219 ? speedLabel.speedColor : "#01E6DC"
-                }
-            }
-
-            Label{
-                text: speedLabel.value.toFixed(0) + " MPH "
-                font.pixelSize: 32
-                font.family: "Inter"
-                font.bold: Font.Normal
-                font.capitalization: Font.AllUppercase
-                color: "#FFFFFF"
             }
         }
 
@@ -592,7 +524,7 @@ ApplicationWindow {
             spanAngle: 3.6 * value
             minValue: 0
             maxValue: 100
-            value: accelerating ? maxValue : 65
+            value: vehicleData.batterySoc
             textFont {
                 family: "inter"
                 italic: false
@@ -603,8 +535,8 @@ ApplicationWindow {
             suffixText: ""
             textColor: "#FFFFFF"
 
-            property bool accelerating
-            Behavior on value { NumberAnimation { duration: 1000 }}
+            // property bool accelerating
+            Behavior on value { NumberAnimation { duration: 300 }}
 
             ColumnLayout{
                 anchors.centerIn: parent
