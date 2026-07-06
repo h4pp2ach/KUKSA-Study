@@ -1,0 +1,28 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Qt / CMake
+build/
+cmake-build-*/
+*.user
+*.autosave
+CMakeCache.txt
+CMakeFiles/
+
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Secrets / Certs
+*.token
+*.key
+*.pem
+.env
