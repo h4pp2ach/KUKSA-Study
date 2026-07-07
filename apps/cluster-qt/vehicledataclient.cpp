@@ -42,13 +42,35 @@ bool VehicleDataClient::connected() const
 
 void VehicleDataClient::connectToServer(const QString &host, quint16 port)
 {
+    m_host = host;
+    m_port = port;
+    m_buffer.clear();
+
     if (m_socket.state() == QAbstractSocket::ConnectedState ||
         m_socket.state() == QAbstractSocket::ConnectingState) {
         return;
     }
 
-    qDebug() << "[VehicleDataClient] Connecting to" << host << port;
-    m_socket.connectToHost(host, port);
+    qDebug() << "[VehicleDataClient] Connecting to" << m_host << m_port;
+    m_socket.connectToHost(m_host, m_port);
+}
+
+void VehicleDataClient::disconnectFromServer()
+{
+    m_buffer.clear();
+
+    if (m_socket.state() == QAbstractSocket::UnconnectedState) {
+        return;
+    }
+
+    qDebug() << "[VehicleDataClient] Disconnecting";
+
+    if (m_socket.state() == QAbstractSocket::ConnectingState) {
+        m_socket.abort();
+        return;
+    }
+
+    m_socket.disconnectFromHost();
 }
 
 void VehicleDataClient::onConnected()
@@ -61,6 +83,7 @@ void VehicleDataClient::onConnected()
 
 void VehicleDataClient::onDisconnected()
 {
+    m_buffer.clear();
     m_connected = false;
     emit connectedChanged();
 

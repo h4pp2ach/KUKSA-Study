@@ -23,6 +23,7 @@ ApplicationWindow {
     property real designHeight: 960
 
     property real clusterScale: Math.min(width / designWidth, height / designHeight)
+    property string currentGear: String(vehicleData.gear).toUpperCase()
 
 
     function generateRandom(maxLimit = 70){
@@ -41,6 +42,14 @@ ApplicationWindow {
         }
     }
 
+    function gearColor(gear){
+        return currentGear === gear ? "#01E6DE" : "#FFFFFF"
+    }
+
+    function gearOpacity(gear){
+        return currentGear === gear ? 1.0 : 0.2
+    }
+
     Timer {
         interval: 500
         running: true
@@ -57,8 +66,58 @@ ApplicationWindow {
         onActivated: Qt.quit()
     }
 
-    Component.onCompleted: {
-        vehicleData.connectToServer("127.0.0.1", 55556)
+    Rectangle {
+        id: tcpControl
+        width: 188
+        height: 44
+        radius: 6
+        color: "#20242D"
+        border.color: vehicleData.connected ? "#01E6DE" : "#4C5663"
+        border.width: 1
+        opacity: 0.94
+        z: 10
+
+        anchors {
+            top: parent.top
+            left: parent.left
+            margins: 12
+        }
+
+        RowLayout {
+            anchors.fill: parent
+            anchors.margins: 8
+            spacing: 8
+
+            Rectangle {
+                width: 9
+                height: 9
+                radius: 4.5
+                color: vehicleData.connected ? "#01E6DE" : "#EF5B5B"
+                Layout.alignment: Qt.AlignVCenter
+            }
+
+            Label {
+                text: "TCP"
+                color: "#FFFFFF"
+                font.pixelSize: 12
+                font.family: "Inter"
+                Layout.fillWidth: true
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            Button {
+                text: vehicleData.connected ? "Disconnect" : "Connect"
+                Layout.preferredWidth: 104
+                Layout.preferredHeight: 30
+                onClicked: {
+                    if (vehicleData.connected) {
+                        vehicleData.disconnectFromServer()
+                    } else {
+                        vehicleData.connectToServer("127.0.0.1", 55556)
+                    }
+                }
+            }
+        }
     }
 
     Image {
@@ -302,7 +361,9 @@ ApplicationWindow {
                 font.family: "Inter"
                 font.bold: Font.Normal
                 font.capitalization: Font.AllUppercase
-                color: "#FFFFFF"
+                opacity: gearOpacity("P")
+                color: gearColor("P")
+                Behavior on opacity { NumberAnimation { duration: 180 }}
             }
 
             Label{
@@ -311,8 +372,9 @@ ApplicationWindow {
                 font.family: "Inter"
                 font.bold: Font.Normal
                 font.capitalization: Font.AllUppercase
-                opacity: 0.2
-                color: "#FFFFFF"
+                opacity: gearOpacity("R")
+                color: gearColor("R")
+                Behavior on opacity { NumberAnimation { duration: 180 }}
             }
             Label{
                 text: "N"
@@ -320,8 +382,9 @@ ApplicationWindow {
                 font.family: "Inter"
                 font.bold: Font.Normal
                 font.capitalization: Font.AllUppercase
-                opacity: 0.2
-                color: "#FFFFFF"
+                opacity: gearOpacity("N")
+                color: gearColor("N")
+                Behavior on opacity { NumberAnimation { duration: 180 }}
             }
             Label{
                 text: "D"
@@ -329,8 +392,9 @@ ApplicationWindow {
                 font.family: "Inter"
                 font.bold: Font.Normal
                 font.capitalization: Font.AllUppercase
-                opacity: 0.2
-                color: "#FFFFFF"
+                opacity: gearOpacity("D")
+                color: gearColor("D")
+                Behavior on opacity { NumberAnimation { duration: 180 }}
             }
         }
 

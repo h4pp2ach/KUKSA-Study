@@ -22,6 +22,7 @@ public:
     bool connected() const;
 
     Q_INVOKABLE void connectToServer(const QString &host = "127.0.0.1", quint16 port = 55556);
+    Q_INVOKABLE void disconnectFromServer();
 
 signals:
     void vehicleSpeedChanged();
@@ -40,6 +41,8 @@ private:
 
     QTcpSocket m_socket;
     QByteArray m_buffer;
+    QString m_host = "127.0.0.1";
+    quint16 m_port = 55556;
 
     double m_vehicleSpeed = 0.0;
     double m_batterySoc = 65.0;
